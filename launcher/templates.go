@@ -20,7 +20,7 @@ After=docker.service
 
 [Service]
 Restart=always
-ExecStart=/usr/bin/docker run {{.Container}} {{.Run}} {{range .Args}} {{.}} {{end}}
+ExecStart=/usr/bin/docker run -d {{.Container}} {{.Run}} {{range .Args}} {{.}} {{end}}
 
 [Install]
 WantedBy=local.target

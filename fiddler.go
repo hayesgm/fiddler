@@ -77,6 +77,9 @@ func main() {
       }
 
       log.Println("Exiting...")
+    } else {
+      ch := make(chan int)
+      <- ch // Hold forever
     }
   }
 }
