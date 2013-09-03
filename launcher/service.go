@@ -94,7 +94,7 @@ func installService(service Service) (err error) {
   // We're going to write this service
   log.Printf("Installing Fiddler Service, %#v\n", string(service.contents))
 
-  sf, err := os.OpenFile(path.Join("/media/state/units",service.name), os.O_TRUNC|os.O_CREATE, 0644)
+  sf, err := os.OpenFile(path.Join("/media/state/units",service.name), os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0644)
   if err != nil {
     return err
   }
