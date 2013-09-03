@@ -12,6 +12,7 @@ func Launch(docker *config.DockerConf) (cmd *exec.Cmd, err error) {
   log.Printf("Launching %#v", docker)
   
   args := make([]string, 3+len(docker.Args))
+  args[0] = "/usr/bin/docker"
   args[1] = "run"
   args[2] = docker.Container
   for i := 0; i < len(docker.Args); i++ {
