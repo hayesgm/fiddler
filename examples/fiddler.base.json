@@ -3,7 +3,7 @@
   "docker": {
     "container": "base",
     "args": [
-      "/bin/sh -c \"while true; do echo Hello World; sleep 1; done\""
+      "/bin/bash -c \"while true; do echo Hello World; sleep 1; done\""
     ]
   }
 }
