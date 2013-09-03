@@ -65,4 +65,6 @@ func main() {
   if err != nil {
     log.Fatal("Unable to complete",conf.Docker,err)
   }
+  
+  log.Println("Exiting...")
 }
