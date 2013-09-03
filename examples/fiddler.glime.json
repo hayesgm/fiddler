@@ -1,0 +1,6 @@
+
+{
+  "docker": {
+    "container": "hayesgm/glime"
+  }
+}

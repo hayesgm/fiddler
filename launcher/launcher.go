@@ -14,12 +14,19 @@ func Launch(docker *config.DockerConf) (cmd *exec.Cmd, err error) {
   args[0] = "/usr/bin/docker"
   args[1] = "run"
   args[2] = docker.Container
-  args[3] = docker.Run
-  for i := 0; i < len(docker.Args); i++ {
-    args[i+4] = docker.Args[i]
+
+  j := 3
+
+  if len(docker.Run) > 0 {
+    args[j] = docker.Run
+    j++
   }
 
-  cmd = &exec.Cmd{Path: "/usr/bin/docker", Args: args}
+  for i := 0; i < len(docker.Args); i++ {
+    args[i+j] = docker.Args[i]
+  }
+
+  cmd = &exec.Cmd{Path: "/bin/echo", Args: args}
   // For now, we'll show this output specifically
   // We may want to pipe this to a file
   //cmd.Stdout = os.Stdout
