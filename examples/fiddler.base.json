@@ -4,7 +4,7 @@
     "container": "base",
     "run": "/bin/bash",
     "args": [
-      "-c 'while true; do echo Hello World; sleep 1; done'"
+      "-c while true; do echo Hello World; sleep 1; done"
     ]
   }
 }
