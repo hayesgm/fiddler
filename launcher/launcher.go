@@ -25,7 +25,7 @@ func Launch(docker *config.DockerConf) (cmd *exec.Cmd, err error) {
   // We may want to pipe this to a file
   cmd.Stdout = os.Stdout
   cmd.Stderr = os.Stderr
-
+  log.Printf("Running cmd: %#v\n", cmd)
   err = cmd.Start()
   if err != nil {
     return
