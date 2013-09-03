@@ -9,6 +9,7 @@ import (
   "text/template"
   "bytes"
   "os/exec"
+  "github.com/hayesgm/fiddler/config"
 )
 
 type Service struct {
@@ -25,7 +26,7 @@ type ServiceSettings struct {
 // 1) This is going to copy our executable to a more suitable location (/usr/bin/fiddler)
 // 2) Then, we'll install a service for ourselves
 // 3) And we'll kick off that service
-func InstallFiddler(conf string) (err error) {
+func InstallFiddler(c string, conf config.FiddlerConf, launch bool) (err error) {
   // err = copyToBin()
   // if err != nil {
   //  return
@@ -35,19 +36,18 @@ func InstallFiddler(conf string) (err error) {
     return
   }
 
-  tmpl, err := template.New("fiddler.service").Parse(FiddlerTemplate)
+  settings := ServiceSettings{Exec: src, Conf: c}
+
+  err = installServiceFromTemplate("fiddler.service", FiddlerTemplate, &settings)
   if err != nil {
     return
   }
-  var contents bytes.Buffer
 
-  settings := ServiceSettings{Exec: src, Conf: conf}
-  tmpl.Execute(&contents, settings)
-
-  service := Service{name: "fiddler.service", contents: contents.Bytes()}
-  err = installService(service)
-  if err != nil {
-    return
+  if !launch {
+    err = installServiceFromTemplate("docker.service", DockerTemplate, conf.Docker)
+    if err != nil {
+      return
+    }
   }
 
   err = restartServices()
@@ -55,6 +55,24 @@ func InstallFiddler(conf string) (err error) {
     return
   }
 
+  return
+}
+
+func installServiceFromTemplate(name string, templateText string, settings interface{}) (err error) {
+  tmpl, err := template.New(name).Parse(templateText)
+  if err != nil {
+    return
+  }
+  var contents bytes.Buffer
+
+  tmpl.Execute(&contents, settings)
+
+  service := Service{name: name, contents: contents.Bytes()}
+  err = installService(service)
+  if err != nil {
+    return
+  }
+  
   return
 }
 

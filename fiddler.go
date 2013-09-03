@@ -45,20 +45,20 @@ func main() {
     log.Fatal("Must include configuration (-c) option")
   }
 
+  // Next, we'll load the config
+  var conf *config.FiddlerConf
+  conf, err := config.LoadFiddlerConfig(*c)
+
+  if err != nil {
+    log.Fatal("Unable to load config file:", err)
+  }
+
   if *install {
-    err := launcher.InstallFiddler(*c)
+    err := launcher.InstallFiddler(*c, *conf, *launch)
     if err != nil {
       log.Fatal("Error installing Fiddler: ", err)
     }
   } else {
-    // Next, we'll load the config
-    var conf *config.FiddlerConf
-    conf, err := config.LoadFiddlerConfig(*c)
-
-    if err != nil {
-      log.Fatal("Unable to load config file:", err)
-    }
-    
     // Now, we're going to make sure we're monitoring our stats
     go tracker.TrackMyStats(cli, myid, []string{"cpu"})
     go tracker.WatchStats(cli) // TODO: This should only be for leader node
