@@ -11,12 +11,13 @@ import (
 func Launch(docker *config.DockerConf) (cmd *exec.Cmd, err error) {
   log.Printf("Launching %#v", docker)
   
-  args := make([]string, 2+len(docker.Args))
-  args[0] = "run"
-  args[1] = docker.Container
+  args := make([]string, 3+len(docker.Args))
+  args[1] = "run"
+  args[2] = docker.Container
   for i := 0; i < len(docker.Args); i++ {
-    args[i+2] = docker.Args[i]
+    args[i+3] = docker.Args[i]
   }
+
   cmd = &exec.Cmd{Path: "/usr/bin/docker", Args: args}
   // For now, we'll show this output specifically
   // We may want to pipe this to a file
