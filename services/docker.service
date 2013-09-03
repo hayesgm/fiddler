@@ -1,0 +1,10 @@
+[Unit]
+Description=Docker {{name}}
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker {{}}
+
+[Install]
+WantedBy=local.target

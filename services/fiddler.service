@@ -1,0 +1,10 @@
+[Unit]
+Description=Fiddler
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/fiddler -l -c {{.}}
+
+[Install]
+WantedBy=local.target
