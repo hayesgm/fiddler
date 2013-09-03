@@ -4,7 +4,7 @@ After=docker.service
 
 [Service]
 Restart=always
-ExecStart=/usr/bin/fiddler -l -c {{.}}
+ExecStart={{.Exec}} -l -c {{.Conf}}
 
 [Install]
 WantedBy=local.target

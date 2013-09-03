@@ -16,12 +16,21 @@ type Service struct {
   contents []byte
 }
 
+type ServiceSettings struct {
+  Exec string
+  Conf string
+}
+
 // Installs Fiddler to run on systemd
 // 1) This is going to copy our executable to a more suitable location (/usr/bin/fiddler)
 // 2) Then, we'll install a service for ourselves
 // 3) And we'll kick off that service
 func InstallFiddler(conf string) (err error) {
-  err = copyToBin()
+  // err = copyToBin()
+  // if err != nil {
+  //  return
+  // }
+  src, err := osext.Executable()
   if err != nil {
     return
   }
@@ -32,7 +41,9 @@ func InstallFiddler(conf string) (err error) {
   }
   tmpl := template.Must(template.ParseFiles(path.Join(wd,"services","fiddler.service")))
   var contents bytes.Buffer
-  tmpl.Execute(&contents, conf)
+
+  settings := ServiceSettings{Exec: src, Conf: conf}
+  tmpl.Execute(&contents, settings)
 
   service := Service{name: "fiddler.service", contents: contents.Bytes()}
   err = installService(service)
