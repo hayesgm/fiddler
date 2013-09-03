@@ -9,6 +9,7 @@ import (
 
 type DockerConf struct {
   Container string
+  Run string
   Args []string
 }
 

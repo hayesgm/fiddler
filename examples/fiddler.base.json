@@ -2,8 +2,9 @@
 {
   "docker": {
     "container": "base",
+    "run": "/bin/bash",
     "args": [
-      "/bin/bash -c \"while true; do echo Hello World; sleep 1; done\""
+      "-c \"while true; do echo Hello World; sleep 1; done\""
     ]
   }
 }
