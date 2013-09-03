@@ -44,7 +44,7 @@ func InstallFiddler(c string, conf config.FiddlerConf, launch bool) (err error) 
   }
 
   if !launch {
-    err = installServiceFromTemplate("docker.service", DockerTemplate, conf.Docker)
+    err = installServiceFromTemplate("container.service", DockerTemplate, conf.Docker)
     if err != nil {
       return
     }
@@ -72,7 +72,7 @@ func installServiceFromTemplate(name string, templateText string, settings inter
   if err != nil {
     return
   }
-  
+
   return
 }
 

@@ -7,7 +7,7 @@ After=docker.service
 
 [Service]
 Restart=always
-ExecStart={{.Exec}} -l -c {{.Conf}}
+ExecStart={{.Exec}} -c {{.Conf}}
 
 [Install]
 WantedBy=local.target
@@ -15,7 +15,7 @@ WantedBy=local.target
 
 var DockerTemplate = `
 [Unit]
-Description=Docker
+Description=Container
 After=docker.service
 
 [Service]
