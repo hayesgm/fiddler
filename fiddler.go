@@ -61,5 +61,8 @@ func main() {
   if err != nil {
     log.Fatal("Unable to launch",conf.Docker,err)
   }
-  cmd.Wait()
+  err = cmd.Wait()
+  if err != nil {
+    log.Fatal("Unable to complete",conf.Docker,err)
+  }
 }
