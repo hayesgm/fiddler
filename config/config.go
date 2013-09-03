@@ -3,6 +3,8 @@ package config
 import (
   "io/ioutil"
   "encoding/json"
+  "strings"
+  "net/http"
 )
 
 type DockerConf struct {
@@ -15,10 +17,25 @@ type FiddlerConf struct {
 }
 
 func LoadFiddlerConfig(c string) (conf *FiddlerConf, err error) {
-  // First, let's try opening and reading the file
-  lines, err := ioutil.ReadFile(c) // For read access.
-  if err != nil {
-    return nil, err
+  var lines []byte
+
+  if strings.HasPrefix(c,"http") {
+    resp, err := http.Get(c)
+    if err != nil {
+      return nil, err
+    }
+    defer resp.Body.Close()
+
+    lines, err = ioutil.ReadAll(resp.Body)
+    if err != nil {
+      return nil, err
+    }
+  } else {
+    // First, let's try opening and reading the file
+    lines, err = ioutil.ReadFile(c) // For read access.
+    if err != nil {
+      return nil, err
+    }
   }
 
   // Now, let's deserialize the JSON
