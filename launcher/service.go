@@ -35,11 +35,10 @@ func InstallFiddler(conf string) (err error) {
     return
   }
 
-  wd, err := os.Getwd()
-  if (err != nil) {
+  tmpl, err := template.New("fiddler.service").Parse(FiddlerTemplate)
+  if err != nil {
     return
   }
-  tmpl := template.Must(template.ParseFiles(path.Join(wd,"services","fiddler.service")))
   var contents bytes.Buffer
 
   settings := ServiceSettings{Exec: src, Conf: conf}
