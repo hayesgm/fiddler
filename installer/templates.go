@@ -1,4 +1,4 @@
-package launcher
+package installer
 
 var FiddlerTemplate = `
 [Unit]

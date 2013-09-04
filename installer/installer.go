@@ -1,4 +1,4 @@
-package launcher
+package installer
 
 import (
   "os"
@@ -26,7 +26,7 @@ type ServiceSettings struct {
 // 1) This is going to copy our executable to a more suitable location (/usr/bin/fiddler)
 // 2) Then, we'll install a service for ourselves
 // 3) And we'll kick off that service
-func InstallFiddler(c string, conf config.FiddlerConf, launch bool) (err error) {
+func InstallFiddler(c string, conf config.FiddlerConf) (err error) {
   // err = copyToBin()
   // if err != nil {
   //  return
@@ -43,11 +43,9 @@ func InstallFiddler(c string, conf config.FiddlerConf, launch bool) (err error) 
     return
   }
 
-  if !launch {
-    err = installServiceFromTemplate("container.service", DockerTemplate, conf.Docker)
-    if err != nil {
-      return
-    }
+  err = installServiceFromTemplate("container.service", DockerTemplate, conf.Docker)
+  if err != nil {
+    return
   }
 
   err = restartServices()
