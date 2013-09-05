@@ -7,5 +7,15 @@
       "-c",
       "while true; do echo Hello World; sleep 1; done"
     ]
+  },
+  "scale": {
+    "min": 1,
+    "max": 10,
+    "grow": {
+      "avg-cpu": ">0.9"
+    },
+    "shrink": {
+      "avg-cpu": "<0.2"
+    }
   }
 }

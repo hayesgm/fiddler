@@ -120,7 +120,7 @@ func main() {
 
     // Now, we're going to make sure we're monitoring our stats
     go tracker.TrackMyStats(cli, myid, []string{"cpu"})
-    go tracker.WatchStats(cli) // TODO: This should only be for leader node
+    go tracker.WatchStats(cli, myid)
 
     ch := make(chan int)
     <- ch // Hold forever

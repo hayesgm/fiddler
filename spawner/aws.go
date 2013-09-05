@@ -62,11 +62,7 @@ func (pool AmazonSpawnPool) Grow(conf string) (err error) {
     log.Println("Now running", instance.InstanceId)
     // Next, we'll need to install Fiddler
     // It's kind of annoying, but we can ssh into our new box
-    installCmd := fmt.Sprintf("\\curl -L https://raw.github.com/hayesgm/fiddler/master/install.sh | bash -s %s", conf)
-    err = sshCommand(instance.IPAddress, "core", pool.privateKey, installCmd)
-    if err != nil {
-      return err
-    }
+    
   }
 
   return
@@ -119,3 +115,4 @@ func (pool *AmazonSpawnPool) findOrCreateSecurityGroup() (ec2.SecurityGroup, err
 
     return sg, err
   }
+}

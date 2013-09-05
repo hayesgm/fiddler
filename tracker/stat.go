@@ -5,7 +5,7 @@ import (
   "strconv"
   "path"
   "bitbucket.org/hayesgm/systemstat"
-  "log"
+  //"log"
 )
 
 type Stat struct {
@@ -22,7 +22,7 @@ func (stat *Stat) GetStatValue() float64 {
   defer func() {
     if e := recover(); e != nil {
       // We're going to squash issues pull stats
-      log.Println("Failed to pull `", stat.StatType, "` stat data:", e)
+      //log.Println("Failed to pull `", stat.StatType, "` stat data:", e)
     }
   }()
   switch stat.StatType {
