@@ -4,7 +4,8 @@ import (
   "github.com/coreos/go-etcd/etcd"
   "strconv"
   "path"
-  "math/rand"
+  "bitbucket.org/hayesgm/systemstat"
+  "log"
 )
 
 type Stat struct {
@@ -18,9 +19,20 @@ func NewStat(statType string) (stat *Stat) {
 }
 
 func (stat *Stat) GetStatValue() float64 {
+  defer func() {
+    if e := recover(); e != nil {
+      // We're going to squash issues pull stats
+      log.Println("Failed to pull `", stat.StatType, "` stat data:", e)
+    }
+  }()
   switch stat.StatType {
   case "cpu":
-    return rand.Float64()
+    one := systemstat.GetCPUSample()
+    two := systemstat.GetCPUSample()
+    avg := systemstat.GetSimpleCPUAverage(one, two)
+    return avg.BusyPct
+  case "free-mem":
+    return float64(systemstat.GetMemSample().MemFree)
   default:
     return 0.0
   }
