@@ -4,7 +4,6 @@ import (
   "log"
   "launchpad.net/goamz/aws"
   "launchpad.net/goamz/ec2"
-  // "github.com/bmizerany/aws"
   "errors"
   "fmt"
 )
@@ -120,32 +119,3 @@ func (pool *AmazonSpawnPool) findOrCreateSecurityGroup() (ec2.SecurityGroup, err
 
     return sg, err
   }
-
-/*
-  func (pool *AmazonSpawnPool) findOrCreateKeyPair() (err error) {
-    keyName := fmt.Sprintf("fiddler-%s", pool.name)
-
-    r := aws.TemplateRequest // Make a copy of the template request
-
-    // Set the Action parameter
-    r.Add("Action", "DescribeKeyPairs")
-
-    type DescribeKeyPairsResponse struct {
-      aws.Header
-      Keys           []Key `xml:"keySet>item"`
-    }
-
-    type Key struct {
-      KeyName        string
-      KeyFingerprint string
-    }
-
-    v := new(DescribeKeyPairsResponse)
-    aws.Do(r, v)
-
-    for _, key := range v.Keys {
-      if KeyName == 
-    }
-  }
-*/
-}
