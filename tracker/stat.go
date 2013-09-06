@@ -5,6 +5,7 @@ import (
   "strconv"
   "path"
   "bitbucket.org/hayesgm/systemstat"
+  "math/rand"
   //"log"
 )
 
@@ -27,10 +28,11 @@ func (stat *Stat) GetStatValue() float64 {
   }()
   switch stat.StatType {
   case "cpu":
-    one := systemstat.GetCPUSample()
-    two := systemstat.GetCPUSample()
-    avg := systemstat.GetSimpleCPUAverage(one, two)
-    return avg.BusyPct
+    // one := systemstat.GetCPUSample()
+    // two := systemstat.GetCPUSample()
+    // avg := systemstat.GetSimpleCPUAverage(one, two)
+    // return avg.BusyPct
+    return rand.Float64()
   case "free-mem":
     return float64(systemstat.GetMemSample().MemFree)
   default:
@@ -42,5 +44,5 @@ func (stat *Stat) write(myid string, cli *etcd.Client) {
   stat.Value = stat.GetStatValue()
 
   value := strconv.FormatFloat(stat.Value, 'f', -1, 64)
-  cli.Set(path.Join("/stats",myid,stat.StatType), value, 60)
+  cli.Set(path.Join("fiddler/stats",stat.StatType,myid), value, 60)
 }

@@ -120,7 +120,7 @@ func main() {
 
     // Now, we're going to make sure we're monitoring our stats
     go tracker.TrackMyStats(cli, myid, []string{"cpu"})
-    go tracker.WatchStats(cli, myid)
+    go tracker.WatchStats(cli, myid, conf)
 
     ch := make(chan int)
     <- ch // Hold forever

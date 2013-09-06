@@ -9,7 +9,7 @@
     ]
   },
   "scale": {
-    "min": 1,
+    "min": 0,
     "max": 10,
     "grow": {
       "avg-cpu": ">0.9"
