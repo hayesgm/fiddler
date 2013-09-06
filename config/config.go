@@ -13,8 +13,16 @@ type DockerConf struct {
   Args []string
 }
 
+type ScaleConf struct {
+  Min int
+  Max int
+  Grow map[string]string
+  Shrink map[string]string
+}
+
 type FiddlerConf struct {
   Docker *DockerConf
+  Scale *ScaleConf
 }
 
 func LoadFiddlerConfig(c string) (conf *FiddlerConf, err error) {
