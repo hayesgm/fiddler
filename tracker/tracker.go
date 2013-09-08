@@ -5,7 +5,7 @@ import (
   "time"
   "github.com/coreos/go-etcd/etcd"
   "log"
-  "github.com/hayesgm/go-etcd-lock"
+  "github.com/hayesgm/go-etcd-lock/lock"
   "github.com/hayesgm/fiddler/config"
   "github.com/hayesgm/fiddler/spawner"
   "strconv"
