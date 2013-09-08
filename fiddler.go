@@ -45,7 +45,7 @@ func printUsage() {
   fmt.Println("\tInstalls Fiddler into systemd")
   fmt.Println("fiddler --config=<conf> launch")
   fmt.Println("\tLaunches a new container within Fiddler")
-  fmt.Println("fiddler --config=<conf> spawn <name>")
+  fmt.Println("fiddler --config=<conf> spawn")
   fmt.Println("\tSpawns a new fiddler environment in the cloud")
   fmt.Println("fiddler --config=<conf> daemon")
   fmt.Println("\tRuns Fiddler like a daemon to monitor machine")
@@ -85,16 +85,13 @@ func main() {
       log.Fatal("Error installing Fiddler:", err)
     }
   case "s", "spawn":
-    if len(flag.Args()) < 2 {
-      fmt.Println("Must provide env name")
-      printUsage()
+    if len(conf.Env) == 0 {
+      fmt.Println("Must provide env name in config")
       return
     }
 
-    name := flag.Args()[1]
-
     // We'll grab spawn pool and grow it
-    pool, err := spawner.GetSpawnPool(name)
+    pool, err := spawner.GetSpawnPool(conf.Env)
     if err != nil {
       log.Fatal("Error getting spawn pool:", err)
     }

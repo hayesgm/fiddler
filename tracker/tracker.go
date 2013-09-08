@@ -7,6 +7,7 @@ import (
   "log"
   "github.com/hayesgm/fiddler/lock"
   "github.com/hayesgm/fiddler/config"
+  "github.com/hayesgm/fiddler/spawner"
   "strconv"
   "strings"
   "errors"
@@ -33,7 +34,7 @@ func getStats(cli *etcd.Client, metric string) (values []float64, err error) {
   if err != nil {
     return nil, err
   }
-  
+
   values = make([]float64, len(serverResp))
   for i, resp := range serverResp {
     if values[i], err = strconv.ParseFloat(resp.Value, 64); err != nil {
@@ -105,7 +106,7 @@ func check(cli *etcd.Client, stat, val string) (pass bool, err error) {
   return
 }
 
-func checkStats(cli *etcd.Client, conf *config.FiddlerConf) (err error) {
+func checkStats(cli *etcd.Client, conf *config.FiddlerConf, pool spawner.SpawnPool) (err error) {
   // Pull aggregates of the information from config
   serverResp, err := cli.Get("fiddler/servers")
   if err != nil {
@@ -145,8 +146,12 @@ func checkStats(cli *etcd.Client, conf *config.FiddlerConf) (err error) {
     log.Println("Fail as we want to grow and shrink.")
   } else if grow {
     log.Println("I want to grow")
+    // TODO: We need to track the spawning of instances
+    // TODO: We need to come up with a heuristic of when to go.  Every spike != growth
+    // pool.Grow()
   } else if shrink {
     log.Println("I want to shrink")
+    // pool.Shrink()
   }
 
   return
@@ -166,69 +171,22 @@ func WatchStats(cli *etcd.Client, myid string, conf *config.FiddlerConf) {
       default:
         log.Println("I am king")
 
+        // As king, we'll need a spawn pool
+        pool, err := spawner.GetSpawnPool(conf.Env)
+        if err != nil {
+          log.Fatal("Error getting spawn pool:", err)
+        }
+
         // We're going to look at the stats we want to look at
         // and determine the correct count of servers
 
-        err := checkStats(cli, conf)
+        err = checkStats(cli, conf, pool)
         if err != nil {
           log.Printf("Encountered error: %s", err)
         }
 
         time.Sleep(5*time.Second)
-
-        /*
-          // Let's run the watch code
-          var statsCh = make(chan *store.Response)
-
-          // We're going to see when thresholds are passed
-          // Based on the configuration (/defaults)
-
-          go cli.Watch("/stats", 0, statsCh, endCh)
-
-          for {
-            fmt.Printf("Watching...\n")
-            <- statsCh
-            //response := <- statsCh
-            // fmt.Printf("Response: %#v\n", response)
-          }
-        */
       }
     }
   }()
-/*
-  // This is going to be mutually locked against all nodes
-  log.Println("Hello, I am:",myid)
-
-  for {
-    resp, acq, err := cli.TestAndSet("/fiddler/watcher", "", myid, 30)
-    log.Println("Lock Resp:",acq,resp,err)
-    if !acq { // We are locked out
-      // We want to watch for a change in the lock, and we'll repeat
-      var watcherCh = make(chan *store.Response)
-      var endCh = make(chan bool)
-
-      go cli.Watch("/fiddler/watcher", 0, watcherCh, endCh)
-      <- watcherCh
-
-      // Now, we'll try to acquire the lock, again
-    } else {
-      var endCh = make(chan bool)
-
-      // We got a lock, we want to keep it
-      go func() {
-        for {
-          resp, acq, err := cli.TestAndSet("/fiddler/watcher", myid, myid, 30) // Keep the lock alive
-          log.Println("Reset Resp:",acq,resp,err)
-          if !acq {
-            <- endCh // Let's boot ourselves, we're no longer the leader
-          }
-          
-          time.Sleep(15*time.Second)
-        }
-      }()
-
-      
-    }
-  }
-*/
 }

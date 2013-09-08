@@ -21,6 +21,7 @@ type ScaleConf struct {
 }
 
 type FiddlerConf struct {
+  Env string
   Docker *DockerConf
   Scale *ScaleConf
 }

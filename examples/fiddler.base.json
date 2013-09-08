@@ -1,5 +1,6 @@
 
 {
+  "env": "staging",
   "docker": {
     "container": "base",
     "run": "/bin/bash",
