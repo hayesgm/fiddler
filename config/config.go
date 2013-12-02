@@ -24,6 +24,7 @@ type FiddlerConf struct {
   Env string
   Docker *DockerConf
   Scale *ScaleConf
+  Ring []string
 }
 
 func LoadFiddlerConfig(c string) (conf *FiddlerConf, err error) {

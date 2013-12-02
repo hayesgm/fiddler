@@ -1,0 +1,4 @@
+cd /fiddler/animals/go/src/github.com/hayesgm/fiddler
+gvm use go1.2
+export GOPATH=$GOPATH:/fiddler/animals/go
+go run fiddler.go --config=examples/fiddler.base.json join

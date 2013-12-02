@@ -45,6 +45,8 @@ func (pool AmazonSpawnPool) Grow(conf string) (err error) {
   
   e := ec2.New(pool.auth, aws.USEast)
 
+  // We'll need to store a remote location for our bootscript
+  
   options := ec2.RunInstances{
     ImageId: "ami-5b632e32", // CoreOS
     InstanceType: "t1.micro",
@@ -60,8 +62,6 @@ func (pool AmazonSpawnPool) Grow(conf string) (err error) {
 
   for _, instance := range resp.Instances {
     log.Println("Now running", instance.InstanceId)
-    // Next, we'll need to install Fiddler
-    // It's kind of annoying, but we can ssh into our new box
     
   }
 

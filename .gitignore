@@ -27,3 +27,4 @@ doc/**
 conf
 log
 info
+bin/**

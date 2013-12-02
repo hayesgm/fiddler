@@ -7,10 +7,18 @@ import (
 )
 
 // TODO: which docker
-func Launch(docker *config.DockerConf) (cmd *exec.Cmd, err error) {
+// This will launch a docker for the configuration
+// We're going to set-up links on the new instance as unix sockets
+func Launch(docker *config.DockerConf, links []piper.Pipe) (cmd *exec.Cmd, err error) {
   log.Printf("Launching %#v", docker)
   
-  args := make([]string, 4+len(docker.Args))
+  dockerArgsLen := 0
+
+  if docker.Args != nil {
+    dockerArgsLen = len(docker.Args)
+  }
+
+  args := make([]string, 4+dockerArgsLen)
   args[0] = "/usr/bin/docker"
   args[1] = "run"
   args[2] = docker.Container
@@ -22,7 +30,7 @@ func Launch(docker *config.DockerConf) (cmd *exec.Cmd, err error) {
     j++
   }
 
-  for i := 0; i < len(docker.Args); i++ {
+  for i := 0; i < dockerArgsLen; i++ {
     args[i+j] = docker.Args[i]
   }
 

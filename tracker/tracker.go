@@ -30,14 +30,14 @@ func TrackMyStats(cli *etcd.Client, myid string, stats []string) {
 }
 
 func getStats(cli *etcd.Client, metric string) (values []float64, err error) {
-  serverResp, err := cli.Get(path.Join("fiddler/stats",metric))
+  serverResp, err := cli.Get(path.Join("fiddler/stats",metric),false,true)
   if err != nil {
     return nil, err
   }
 
-  values = make([]float64, len(serverResp))
-  for i, resp := range serverResp {
-    if values[i], err = strconv.ParseFloat(resp.Value, 64); err != nil {
+  values = make([]float64, len(serverResp.Kvs))
+  for i, kv := range serverResp.Kvs {
+    if values[i], err = strconv.ParseFloat(kv.Value, 64); err != nil {
       return nil, err
     }
   }
@@ -108,12 +108,12 @@ func check(cli *etcd.Client, stat, val string) (pass bool, err error) {
 
 func checkStats(cli *etcd.Client, conf *config.FiddlerConf, pool spawner.SpawnPool) (err error) {
   // Pull aggregates of the information from config
-  serverResp, err := cli.Get("fiddler/servers")
+  serverResp, err := cli.Get("fiddler/servers",false,true)
   if err != nil {
     return err
   }
 
-  serverCount := len(serverResp)
+  serverCount := len(serverResp.Kvs)
   grow, shrink := false, false // We'll track both
 
   if serverCount < conf.Scale.Max {
