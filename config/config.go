@@ -7,9 +7,9 @@ import (
   "net/http"
 )
 
-type DockerConf struct {
+type RunConf struct {
   Container string
-  Run string
+  Exec string
   Args []string
 }
 
@@ -20,10 +20,19 @@ type ScaleConf struct {
   Shrink map[string]string
 }
 
+type LinkConf struct {
+  Role string
+}
+
+type RoleConf struct {
+  Run *RunConf
+  Links []LinkConf
+  Scale *ScaleConf
+}
+
 type FiddlerConf struct {
   Env string
-  Docker *DockerConf
-  Scale *ScaleConf
+  Roles map[string]RoleConf
   Ring []string
 }
 

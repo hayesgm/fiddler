@@ -11,7 +11,7 @@ import (
 )
 
 type Role struct {
-  Docker *config.DockerConf
+  Run *config.RunConf
   // Pipes []piper.Pipe
 }
 
@@ -33,12 +33,16 @@ type Role struct {
   This is going to be built around a cost-minization
   function that will have penalties for changing
   roles on servers. */
-func decideWorld(conf *config.DockerConf, myid string, cli *etcd.Client) (world map[string][]Role) {
+func decideWorld(conf *config.FiddlerConf, myid string, cli *etcd.Client) (world map[string][]Role) {
   world = make(map[string][]Role) // Make a map of the world
 
   // We're going to set everything to ourselves, for now
-  roles := make([]Role, 1)
-  roles[0].Docker = conf
+  roles := make([]Role, len(conf.Roles))
+  i := 0
+  for _, role := range conf.Roles {
+    roles[i].Run = role.Run
+    i += 1
+  }
   
   world[myid] = roles
 
@@ -51,7 +55,7 @@ func decideWorld(conf *config.DockerConf, myid string, cli *etcd.Client) (world 
   The ruler will run and dictate world state
   with decideWorld().
 */
-func tryToRuleTheWorld(conf *config.DockerConf, myid string, cli *etcd.Client) {
+func tryToRuleTheWorld(conf *config.FiddlerConf, myid string, cli *etcd.Client) {
   rule := func(stopCh chan int) {
     for {
       world := decideWorld(conf, myid, cli)
@@ -79,7 +83,7 @@ func tryToRuleTheWorld(conf *config.DockerConf, myid string, cli *etcd.Client) {
   each Fiddler to keep its launches limited to Roles
   returns on this channel.
 */
-func MyRoles(conf *config.DockerConf, myid string, cli *etcd.Client) (rolesCh chan []Role) {
+func MyRoles(conf *config.FiddlerConf, myid string, cli *etcd.Client) (rolesCh chan []Role) {
   rolesCh = make(chan []Role)
   var watcherCh = make(chan *etcd.Response)
   var endCh = make(chan bool) // Do we use this?

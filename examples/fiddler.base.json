@@ -1,13 +1,16 @@
 
 {
   "env": "staging",
-  "docker": {
-    "container": "base",
-    "run": "/bin/bash",
-    "args": [
-      "-c",
-      "while true; do echo Hello World; sleep 1; done"
-    ]
+  "nodes": {
+    "base": {
+      "container": "base",
+      "run": "/bin/bash",
+      "args": [
+        "-c",
+        "while true; do echo Hello World; sleep 1; done"
+      ],
+      "links": [""]
+    }
   },
   "scale": {
     "min": 0,

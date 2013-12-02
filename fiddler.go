@@ -6,6 +6,7 @@ import (
   "github.com/hayesgm/fiddler/installer"
   "github.com/hayesgm/fiddler/launcher"
   "github.com/hayesgm/fiddler/spawner"
+  "github.com/hayesgm/fiddler/piper"
   "github.com/hayesgm/fiddler/orchestrator"
   "github.com/hayesgm/crates/client"
   "github.com/coreos/go-etcd/etcd"
@@ -57,39 +58,39 @@ func printUsage() {
   fmt.Println("\tJoins a Fiddler ring")
 }
 
-func runLaunch(conf *config.FiddlerConf) {
+func runLaunch(conf *config.RunConf) {
   // We should launch our container
   var cmd *exec.Cmd
-  cmd, err := launcher.Launch(conf.Docker)
+  cmd, err := launcher.Launch(conf, make([]piper.Pipe,0))
   if err != nil {
-    log.Fatal("Error launching container:",conf.Docker,err)
+    log.Fatal("Error launching container:",conf,err)
   }
 
   err = cmd.Wait() // We'll stay open so long as the docker is open.  We can ensure the docker stays open, etc.
   if err != nil {
-    log.Fatal("Failed to run container:",conf.Docker,err)
+    log.Fatal("Failed to run container:",conf,err)
   }
 }
 
 func joinRing(myid string, conf *config.FiddlerConf) {
   // This is going to ask Orchestrator for roles, and fulfill them as required
-  rolesCh := orchestrator.MyRoles(conf.Docker, myid, cli)
+  rolesCh := orchestrator.MyRoles(conf, myid, cli)
 
   for {
     roles := <- rolesCh
-    
+
     // Well, should this kind of be, kill or launch?
     for _, role := range roles {
       // We should launch our container
       var cmd *exec.Cmd
-      cmd, err := launcher.Launch(role.Docker)
+      cmd, err := launcher.Launch(role.Run, make([]piper.Pipe,0))
       if err != nil {
-        log.Fatal("Error launching container:",role.Docker,err)
+        log.Fatal("Error launching container:",role.Run,err)
       }
-      
+
       err = cmd.Wait() // We'll stay open so long as the docker is open.  We can ensure the docker stays open, etc.
       if err != nil {
-        log.Fatal("Failed to run container:",role.Docker,err)
+        log.Fatal("Failed to run container:",role.Run,err)
       }
     }
   }
@@ -157,7 +158,9 @@ func main() {
   case "l", "launch":
     conf := loadConfig(c)
 
-    runLaunch(conf)
+    for _, role := range conf.Roles {
+      runLaunch(role.Run)
+    }
   case "j", "join":
     conf := loadConfig(c)
 
@@ -192,7 +195,9 @@ func main() {
 
     conf := loadConfig(&acqResp.Lease.Conf)
     
-    runLaunch(conf)
+    for _, role := range conf.Roles {
+      runLaunch(role.Run)
+    }
   default:
     printUsage()
     return

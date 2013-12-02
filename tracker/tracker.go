@@ -106,7 +106,7 @@ func check(cli *etcd.Client, stat, val string) (pass bool, err error) {
   return
 }
 
-func checkStats(cli *etcd.Client, conf *config.FiddlerConf, pool spawner.SpawnPool) (err error) {
+func checkStats(cli *etcd.Client, conf config.RoleConf, pool spawner.SpawnPool) (err error) {
   // Pull aggregates of the information from config
   serverResp, err := cli.Get("fiddler/servers",false,true)
   if err != nil {
@@ -179,10 +179,12 @@ func WatchStats(cli *etcd.Client, myid string, conf *config.FiddlerConf) {
 
         // We're going to look at the stats we want to look at
         // and determine the correct count of servers
+        for _, role := range conf.Roles {
+          err = checkStats(cli, role, pool)
 
-        err = checkStats(cli, conf, pool)
-        if err != nil {
-          log.Printf("Encountered error: %s", err)
+          if err != nil {
+            log.Printf("Encountered error: %s", err)
+          }
         }
 
         time.Sleep(5*time.Second)

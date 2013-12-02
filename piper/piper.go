@@ -1,3 +1,4 @@
+package piper
 
 /*
   Piper will connect Docker instances once they are run.

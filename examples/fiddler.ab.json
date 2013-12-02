@@ -1,0 +1,40 @@
+{
+  "env": "staging",
+  "roles": {
+    "a": {
+      "run": {
+        "container": "base",
+        "exec": "/bin/bash",
+        "args": [
+          "-c",
+          "while true; do echo Hello from A; sleep 1; done"
+        ]
+      },
+      "links": ["b"]
+    },
+    "b": {
+      "run": {
+        "container": "base",
+        "exec": "/bin/bash",
+        "args": [
+          "-c",
+          "while true; do echo Hello from B; sleep 1; done"
+        ]
+      },
+      "links": ["a"],
+      "scale": {
+        "min": 1,
+        "max": 10,
+        "grow": {
+          "avg-cpu": ">0.9"
+        },
+        "shrink": {
+          "avg-cpu": "<0.2"
+        }
+      }
+    }
+  },
+  "ring": [
+    "http://127.0.0.1:4001"
+  ]
+}

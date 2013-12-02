@@ -2,6 +2,7 @@ package launcher
 
 import (
   "github.com/hayesgm/fiddler/config"
+  "github.com/hayesgm/fiddler/piper"
   "log"
   "os/exec"
 )
@@ -9,29 +10,29 @@ import (
 // TODO: which docker
 // This will launch a docker for the configuration
 // We're going to set-up links on the new instance as unix sockets
-func Launch(docker *config.DockerConf, links []piper.Pipe) (cmd *exec.Cmd, err error) {
-  log.Printf("Launching %#v", docker)
+func Launch(run *config.RunConf, links []piper.Pipe) (cmd *exec.Cmd, err error) {
+  log.Printf("Launching %#v", run)
   
-  dockerArgsLen := 0
+  runArgsLen := 0
 
-  if docker.Args != nil {
-    dockerArgsLen = len(docker.Args)
+  if run.Args != nil {
+    runArgsLen = len(run.Args)
   }
 
-  args := make([]string, 4+dockerArgsLen)
+  args := make([]string, 4+runArgsLen)
   args[0] = "/usr/bin/docker"
   args[1] = "run"
-  args[2] = docker.Container
+  args[2] = run.Container
 
   j := 3
 
-  if len(docker.Run) > 0 {
-    args[j] = docker.Run
+  if len(run.Exec) > 0 {
+    args[j] = run.Exec
     j++
   }
 
-  for i := 0; i < dockerArgsLen; i++ {
-    args[i+j] = docker.Args[i]
+  for i := 0; i < runArgsLen; i++ {
+    args[i+j] = run.Args[i]
   }
 
   cmd = &exec.Cmd{Path: "/bin/echo", Args: args}

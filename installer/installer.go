@@ -43,10 +43,11 @@ func InstallFiddler(c string, conf config.FiddlerConf) (err error) {
     return
   }
 
-  err = installServiceFromTemplate("container.service", DockerTemplate, conf.Docker)
-  if err != nil {
-    return
-  }
+  // TODO: Loop through each node-- do we want install as a feature anymore?
+  //err = installServiceFromTemplate("container.service", DockerTemplate, conf.Docker)
+  //if err != nil {
+  //  return
+  //}
 
   err = restartServices()
   if err != nil {
